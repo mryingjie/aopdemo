@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.aop.mapper.OrderTblMapper">
+
+    <update id="updateSelectiveBatch" parameterType="com.demo.aop.bean.OrderTbl">
+        <foreach collection="list" item="orderTbl" separator=";">
+            update order_tbl
+            <set>
+                <if test="orderTbl.userId != null">
+                    user_id = #{orderTbl.userId},
+                </if>
+                <if test="orderTbl.commodityCode != null">
+                    commodity_code = #{orderTbl.commodityCode},
+                </if>
+                <if test="orderTbl.count != null">
+                    count = #{orderTbl.count},
+                </if>
+                <if test="orderTbl.money != null">
+                    money = #{orderTbl.money},
+                </if>
+                <if test="orderTbl.version != null">
+                    version = #{orderTbl.version} + 1,
+                </if>
+            </set>
+            where id = #{orderTbl.id} and version = #{orderTbl.version}
+        </foreach>
+    </update>
+</mapper>
