@@ -62,4 +62,8 @@ public class OrderTblService {
         );
 
     }
+
+    public List<OrderTbl> getAllOrderTbl(){
+        return orderTblMapper.selectList(new QueryWrapper<OrderTbl>());
+    }
 }

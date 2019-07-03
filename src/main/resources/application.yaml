@@ -7,34 +7,64 @@ spring:
 #    url: jdbc:mysql://10.75.229.93:3306/fund_ta?useUnicode=true&characterEncoding=utf-8
 #    username: order_t_w
 #    password: J_mtpJxVtbF3PJ
-    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowMultiQueries=true
+    url: jdbc:mysql://10.58.84.178:3306/demo?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowMultiQueries=true
     username: root
     password: zheng
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 5
+      minIdle: 3
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 30000
+      validationQuery: select 1 from dual
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true
+      #以下是监控相关配置
+      #过滤器
+      web-stat-filter:
+        enabled: true
+        #忽略资源
+        exclusions: /*.a,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*
+        url-pattern: /*
+        #配置profileEnable能够监控单个url调用的sql列表。
+        profile-enable: true
+
+      #selvet 监控可视化界面
+      stat-view-servlet:
+        enabled: true
+        login-password: zheng
+        login-username: zheng
+        url-pattern: /druid/*
+        #白名单 空字符串表示都允许 但必须打开这个配置
+        allow:
+        #黑名单
+#        deny:
+
+
+
 
 
 mybatis-plus:
   mapper-locations: classpath:mybatis/mapper/*.xml
   typeAliasesPackage:
-  global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-    id-type: 0
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 2
-    #驼峰下划线转换
-    db-column-underline: true
-    #刷新mapper 调试神器
-    refresh-mapper: true
-    #数据库大写下划线转换
-    capital-mode: true
-    #序列接口实现类配置
-    #key-generator: com.baomidou.springboot.xxx
-    #逻辑删除配置（下面3个配置）
-    logic-delete-value: 1
-    logic-not-delete-value: 0
-    #自定义填充策略接口实现
-#    meta-object-handler: com.baomidou.springboot.xxx
   configuration:
     cache-enabled: true
     call-setters-on-nulls: true
